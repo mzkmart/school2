@@ -8,6 +8,7 @@
 
 #pragma once
 #include "MoveComponent.h"
+#include "MoveComponent2.h"
 #include <cstdint>
 
 class InputComponent : public MoveComponent
@@ -31,7 +32,7 @@ public:
 	void SetMaxForwardSpeed(float speed) { mMaxForwardSpeed = speed; }
 	void SetMaxAngularSpeed(float speed) { mMaxAngularSpeed = speed; }
 	//変更点
-	void SetMaxJumpSpeed(float speed) { mMaxJumpSpeed = speed; }
+	void SetMaxJumpSpeed(float speed) { mMaxJumpSpeed = 800; }
 	void SetRightKey(int key) { mRightKey = key; }
 	void SetLeftKey(int key) { mLeftKey = key; }
 	//変更点
@@ -43,12 +44,13 @@ private:
 	float mMaxForwardSpeed;
 	float mMaxAngularSpeed;
 	//変更点
-	float mMaxJumpSpeed = 100;
+	float mMaxJumpSpeed;
 	// Keys for forward/back movement
 	int mRightKey;
 	int mLeftKey;
 	//変更点
 	int mJumpKey;
+	float jumpSpeed;
 	// Keys for angular movement
 	int mClockwiseKey;
 	int mCounterClockwiseKey;

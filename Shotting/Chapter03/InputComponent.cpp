@@ -25,7 +25,6 @@ void InputComponent::ProcessInput(const uint8_t* keyState)
 {
 	// Calculate forward speed for MoveComponent
 	float forwardSpeed = 0.0f;
-	float jumpSpeed = 0.0;
 	if (keyState[mRightKey])
 	{
 		forwardSpeed += mMaxForwardSpeed;
@@ -36,9 +35,10 @@ void InputComponent::ProcessInput(const uint8_t* keyState)
 	}
 	if (keyState[mJumpKey])
 	{
-		jumpSpeed += mMaxForwardSpeed;
+		//jumpSpeed += mMaxJumpSpeed;
+		SetJumpSpeed(mMaxJumpSpeed);
 	}
 	SetForwardSpeed(forwardSpeed);
-	SetJumpSpeed(jumpSpeed);
+	//SetJumpSpeed(jumpSpeed);
 
 }

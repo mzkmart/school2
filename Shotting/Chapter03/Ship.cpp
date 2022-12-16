@@ -25,7 +25,7 @@ Ship::Ship(Game* game)
 	InputComponent* ic = new InputComponent(this);
 	ic->SetRightKey(SDL_SCANCODE_D);
 	ic->SetLeftKey(SDL_SCANCODE_A);
-	ic->SetJumpKey(SDL_SCANCODE_W);
+	ic->SetJumpKey(SDL_SCANCODE_SPACE);
 
 	//•Ï‚¦‚é‚Æ‚±‚ë
 	ic->SetClockwiseKey(SDL_SCANCODE_Q);

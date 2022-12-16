@@ -31,15 +31,25 @@ void MoveComponent::Update(float deltaTime)
 	
 	//•ÏX“_
 	Vector2 pos = mOwner->GetPosition();
-	float gravity = 100;
-	if (pos.y < 768.0f) { pos.y += 100 * deltaTime; }
-	mOwner->SetPosition(pos);
-	
-	
-	if (!Math::NearZero(mJumpSpeed))
+	if (pos.y < 768.0f)
+	{ 
+		pos.y += 300 * deltaTime;
+		mOwner->SetPosition(pos);
+	}
+	else if (pos.y >= 768.0f)
+	{
+		mJumptime = 0.0f;
+	}
+
+	if (!Math::NearZero(mJumpSpeed) && mJumptime <= 0.5f)
 	{
 		Vector2 pos = mOwner->GetPosition();
 		pos.y -= mJumpSpeed * deltaTime;
+		mJumptime += deltaTime;
+		if (mJumptime > 0.5f)
+		{
+			mJumpSpeed = 0.0f;
+		}
 		mOwner->SetPosition(pos);
 	}
 
