@@ -8,7 +8,7 @@
 
 #include "Laser.h"
 #include "SpriteComponent.h"
-#include "MoveComponent.h"
+#include "MoveComponent2.h"
 #include "Game.h"
 #include "CircleComponent.h"
 #include "Asteroid.h"
@@ -22,7 +22,7 @@ Laser::Laser(Game* game)
 	sc->SetTexture(game->GetTexture("Assets/Laser.png"));
 
 	// Create a move component, and set a forward speed
-	MoveComponent* mc = new MoveComponent(this);
+	MoveComponent2* mc = new MoveComponent2(this);
 	mc->SetForwardSpeed(800.0f);
 
 	// Create a circle component (for collision)

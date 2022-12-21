@@ -39,33 +39,43 @@ void MoveComponent::Update(float deltaTime)
 	else if (pos.y >= 768.0f)
 	{
 		mJumptime = 0.0f;
+		mControl = 0;
 	}
 
-	if (!Math::NearZero(mJumpSpeed) && mJumptime <= 0.5f)
+	if (!Math::NearZero(mJumpSpeed) && mControl < 3)
 	{
-		Vector2 pos = mOwner->GetPosition();
+		mControl = 3;
+		mJumpForwardSpeed = mForwardSpeed;
+	}
+
+	if (mJumptime > 0.5f)
+	{
+		pos.x += mJumpForwardSpeed * deltaTime;
+		mControl = 4;
+		mJumpSpeed = 0.0f;
+	}
+	else if (mJumptime <= 0.5f && mControl == 3)
+	{
+		pos = mOwner->GetPosition();
 		pos.y -= mJumpSpeed * deltaTime;
 		mJumptime += deltaTime;
-		if (mJumptime > 0.5f)
-		{
-			mJumpSpeed = 0.0f;
-		}
+		pos.x += mJumpForwardSpeed * deltaTime;
 		mOwner->SetPosition(pos);
 	}
+	
 
-	if (!Math::NearZero(mForwardSpeed))
+	if (!Math::NearZero(mForwardSpeed) && mControl < 3)
 	{
 		//•ÏX“_
-		Vector2 pos = mOwner->GetPosition();
+		pos = mOwner->GetPosition();
 		pos.x += mForwardSpeed * deltaTime;
-		
-		// (Screen wrapping code only for asteroids)
-		if (pos.x < 0.0f) { pos.x = 1022.0f; }
-		else if (pos.x > 1024.0f) { pos.x = 2.0f; }
-
-		if (pos.y < 0.0f) { pos.y = 2.0f; }
-		else if (pos.y > 768.0f) { pos.y = 768.0f; }
-
-		mOwner->SetPosition(pos);
 	}
+	// (Screen wrapping code only for asteroids)
+	if (pos.x < 0.0f) { pos.x = 1022.0f; }
+	else if (pos.x > 1024.0f) { pos.x = 2.0f; }
+
+	if (pos.y < 0.0f) { pos.y = 2.0f; }
+	else if (pos.y > 768.0f) { pos.y = 768.0f; }
+
+	mOwner->SetPosition(pos);
 }

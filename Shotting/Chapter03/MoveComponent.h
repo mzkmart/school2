@@ -33,4 +33,6 @@ private:
 	float mJumpSpeed;
 	float mJumptime;
 	bool mJumpBool = true;
+	int mControl = 0;
+	float mJumpForwardSpeed;
 };
