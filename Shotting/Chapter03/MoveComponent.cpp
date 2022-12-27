@@ -8,74 +8,72 @@
 
 #include "MoveComponent.h"
 #include "Actor.h"
+#include "stdio.h"
+#include <iostream>
+#include <algorithm>
+#include <string>
 
 MoveComponent::MoveComponent(class Actor* owner, int updateOrder)
-:Component(owner, updateOrder)
-,mAngularSpeed(0.0f)
-,mForwardSpeed(0.0f)
-,mJumpSpeed(0.0f)
+	:Component(owner, updateOrder)
+	, mAngularSpeed(0.0f)
+	, mForwardSpeed(0.0f)
+	, mJumpSpeed(0.0f)
+	,mJumpForwardSpeed(0.0f)
 {
-	
+
 }
 
 void MoveComponent::Update(float deltaTime)
 {
-
-	if (!Math::NearZero(mAngularSpeed))
-	{
-		float rot = mOwner->GetRotation();
-		rot += mAngularSpeed * deltaTime;
-		mOwner->SetRotation(rot);
-	}
-
-	
-	//変更点
 	Vector2 pos = mOwner->GetPosition();
-	if (pos.y < 768.0f)
-	{ 
-		pos.y += 300 * deltaTime;
+
+	if (mJumpControl == false)
+	{
+		float a = Math::Sin(3.14 * mJumpSpeed) * 1.5f;
+		if (mJumpForwardSpeed > 0)
+		{
+			pos.x -= Math::Sin(3.14 * mJumpForwardSpeed);
+		}
+		else if (mJumpForwardSpeed < 0)
+		{
+			pos.x -= Math::Sin(3.14 * mJumpForwardSpeed);
+		}
+
+		if (a <= 0 && mGravityControl == false)
+		{
+			pos.y += a;
+		}
+		else if (pos.y <= 730.0f)
+		{
+			pos.y += 50 * deltaTime;
+			mGravityControl = true;
+			mOwner->SetPosition(pos);
+			pos = mOwner->GetPosition();
+		}
+		else if (pos.y > 730.0f)
+		{
+			mJumpControl = true;
+			mGravityControl = false;
+			mJumpForwardSpeed = 0.0f;
+			pos.y = 730.0f;
+			mJumpSpeed = 0.0f;
+			printf("%f\n", pos.y);
+			mOwner->SetPosition(pos);
+		}
+
+		mJumpSpeed += 10;
 		mOwner->SetPosition(pos);
 	}
-	else if (pos.y >= 768.0f)
-	{
-		mJumptime = 0.0f;
-		mControl = 0;
-	}
 
-	if (!Math::NearZero(mJumpSpeed) && mControl < 3)
+	if (!Math::NearZero(mForwardSpeed) && mJumpControl)
 	{
-		mControl = 3;
-		mJumpForwardSpeed = mForwardSpeed;
-	}
-
-	if (mJumptime > 0.5f)
-	{
-		pos.x += mJumpForwardSpeed * deltaTime;
-		mControl = 4;
-		mJumpSpeed = 0.0f;
-	}
-	else if (mJumptime <= 0.5f && mControl == 3)
-	{
-		pos = mOwner->GetPosition();
-		pos.y -= mJumpSpeed * deltaTime;
-		mJumptime += deltaTime;
-		pos.x += mJumpForwardSpeed * deltaTime;
-		mOwner->SetPosition(pos);
-	}
-	
-
-	if (!Math::NearZero(mForwardSpeed) && mControl < 3)
-	{
-		//変更点
 		pos = mOwner->GetPosition();
 		pos.x += mForwardSpeed * deltaTime;
+		mOwner->SetPosition(pos);
 	}
 	// (Screen wrapping code only for asteroids)
 	if (pos.x < 0.0f) { pos.x = 1022.0f; }
 	else if (pos.x > 1024.0f) { pos.x = 2.0f; }
-
-	if (pos.y < 0.0f) { pos.y = 2.0f; }
-	else if (pos.y > 768.0f) { pos.y = 768.0f; }
 
 	mOwner->SetPosition(pos);
 }

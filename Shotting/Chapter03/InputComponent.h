@@ -32,7 +32,7 @@ public:
 	void SetMaxForwardSpeed(float speed) { mMaxForwardSpeed = speed; }
 	void SetMaxAngularSpeed(float speed) { mMaxAngularSpeed = speed; }
 	//変更点
-	void SetMaxJumpSpeed(float speed) { mMaxJumpSpeed = 800; }
+	void SetMaxJumpSpeed(float speed) { mMaxJumpSpeed = 100; }
 	void SetRightKey(int key) { mRightKey = key; }
 	void SetLeftKey(int key) { mLeftKey = key; }
 	//変更点

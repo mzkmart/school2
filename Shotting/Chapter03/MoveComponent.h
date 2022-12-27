@@ -19,11 +19,14 @@ public:
 	
 	float GetAngularSpeed() const { return mAngularSpeed; }
 	float GetForwardSpeed() const { return mForwardSpeed; }
+	float GetJumpBool() const { return mJumpControl; }
 	//変更点
 	float GetJumpSpeed() const { return mJumpSpeed;  }
 	void SetAngularSpeed(float speed) { mAngularSpeed = speed; }
 	void SetForwardSpeed(float speed) { mForwardSpeed = speed; }
 	void SetJumpSpeed(float speed) { mJumpSpeed = speed; }
+	void SetJumpForward(float speed) { mJumpForwardSpeed = speed; }
+	void SetJumpflag(bool flag) { mJumpControl = flag; }
 private:
 	// Controls rotation (radians/second)
 	float mAngularSpeed;
@@ -32,7 +35,8 @@ private:
 	//変更点
 	float mJumpSpeed;
 	float mJumptime;
-	bool mJumpBool = true;
-	int mControl = 0;
+	bool mJumpBool = false;
+	bool mJumpControl = true;
+	bool mGravityControl = false;
 	float mJumpForwardSpeed;
 };

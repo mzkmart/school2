@@ -32,7 +32,7 @@ Ship::Ship(Game* game)
 	ic->SetCounterClockwiseKey(SDL_SCANCODE_S);
 
 	//•ÏX“_
-	ic->SetMaxForwardSpeed(300.0f);
+	ic->SetMaxForwardSpeed(200.0f);
 	ic->SetMaxJumpSpeed(100.0f);
 	ic->SetMaxAngularSpeed(Math::TwoPi);
 }

@@ -33,12 +33,11 @@ void InputComponent::ProcessInput(const uint8_t* keyState)
 	{
 		forwardSpeed -= mMaxForwardSpeed;
 	}
-	if (keyState[mJumpKey])
+	if (keyState[mJumpKey] && GetJumpBool())
 	{
-		//jumpSpeed += mMaxJumpSpeed;
-		SetJumpSpeed(mMaxJumpSpeed);
+		SetJumpflag(false);
+		SetJumpForward(forwardSpeed);
 	}
 	SetForwardSpeed(forwardSpeed);
-	//SetJumpSpeed(jumpSpeed);
 
 }
