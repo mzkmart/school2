@@ -38,6 +38,16 @@ void InputComponent::ProcessInput(const uint8_t* keyState)
 		SetJumpflag(false);
 		SetJumpForward(forwardSpeed);
 	}
+	float angularSpeed = 0.0f;
+	if (keyState[mClockwiseKey])
+	{
+		angularSpeed += mMaxAngularSpeed;
+	}
+	if (keyState[mCounterClockwiseKey])
+	{
+		angularSpeed -= mMaxAngularSpeed;
+	}
+	SetAngularSpeed(angularSpeed);
 	SetForwardSpeed(forwardSpeed);
 
 }

@@ -11,10 +11,13 @@
 #include "InputComponent.h"
 #include "Game.h"
 #include "Laser.h"
+#include "CircleComponent.h"
+#include "Asteroid.h"
 
 Ship::Ship(Game* game)
 	:Actor(game)
 	,mLaserCooldown(0.0f)
+	, mCircle(nullptr)
 {
 	// Create a sprite component
 	SpriteComponent* sc = new SpriteComponent(this, 150);
@@ -27,19 +30,34 @@ Ship::Ship(Game* game)
 	ic->SetLeftKey(SDL_SCANCODE_A);
 	ic->SetJumpKey(SDL_SCANCODE_SPACE);
 
-	//•Ï‚¦‚é‚Æ‚±‚ë
 	ic->SetClockwiseKey(SDL_SCANCODE_Q);
-	ic->SetCounterClockwiseKey(SDL_SCANCODE_S);
+	ic->SetCounterClockwiseKey(SDL_SCANCODE_E);
 
 	//•ÏX“_
 	ic->SetMaxForwardSpeed(200.0f);
 	ic->SetMaxJumpSpeed(100.0f);
 	ic->SetMaxAngularSpeed(Math::TwoPi);
+
+	// Create a circle component (for collision)
+	mCircle = new CircleComponent(this);
+	mCircle->SetRadius(20.0f);
 }
 
 void Ship::UpdateActor(float deltaTime)
 {
 	mLaserCooldown -= deltaTime;
+	//è¦Î‚Æ‚ÌÕ“Ë‚Ì”»’è
+	for (auto ast : GetGame()->GetAsteroids())
+	{
+		if (Intersect(*mCircle, *(ast->GetCircle())))
+		{
+			// The first asteroid we intersect with,
+			// set ourselves and the asteroid to dead
+			SetState(EDead);
+			ast->SetState(EDead);
+			break;
+		}
+	}
 }
 
 void Ship::ActorInput(const uint8_t* keyState)

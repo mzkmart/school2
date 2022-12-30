@@ -26,7 +26,7 @@ Asteroid::Asteroid(Game* game)
 
 	// Create a sprite component
 	SpriteComponent* sc = new SpriteComponent(this);
-	sc->SetTexture(game->GetTexture("Assets/Asteroid.png"));
+	sc->SetTexture(game->GetTexture("Assets/Asteroid2.png"));
 
 	// Create a move component, and set a forward speed
 	MoveComponent2* mc = new MoveComponent2(this);
@@ -34,7 +34,7 @@ Asteroid::Asteroid(Game* game)
 
 	// Create a circle component (for collision)
 	mCircle = new CircleComponent(this);
-	mCircle->SetRadius(40.0f);
+	mCircle->SetRadius(20.0f);
 
 	// Add to mAsteroids in game
 	game->AddAsteroid(this);

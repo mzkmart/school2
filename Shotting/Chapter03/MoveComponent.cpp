@@ -25,6 +25,13 @@ MoveComponent::MoveComponent(class Actor* owner, int updateOrder)
 
 void MoveComponent::Update(float deltaTime)
 {
+	if (!Math::NearZero(mAngularSpeed))
+	{
+		float rot = mOwner->GetRotation();
+		rot += mAngularSpeed * deltaTime;
+		mOwner->SetRotation(rot);
+	}
+
 	Vector2 pos = mOwner->GetPosition();
 
 	if (mJumpControl == false)

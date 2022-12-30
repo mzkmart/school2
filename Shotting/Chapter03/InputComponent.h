@@ -35,6 +35,9 @@ public:
 	void SetMaxJumpSpeed(float speed) { mMaxJumpSpeed = 100; }
 	void SetRightKey(int key) { mRightKey = key; }
 	void SetLeftKey(int key) { mLeftKey = key; }
+	void SetLeftRotateKey(int key) { mRightRotateKey = key; };
+	void SetRightRotateKey(int key) { mLeftRotateKey = key; };
+	void SetFowardRotateKey(int key) { mFowardRotateKey = key; };
 	//変更点
 	void SetJumpKey(int key) { mJumpKey = key; }
 	void SetClockwiseKey(int key) { mClockwiseKey = key; }
@@ -49,6 +52,9 @@ private:
 	int mRightKey;
 	int mLeftKey;
 	//変更点
+	int mRightRotateKey;
+	int mLeftRotateKey;
+	int mFowardRotateKey;
 	int mJumpKey;
 	float jumpSpeed;
 	// Keys for angular movement
