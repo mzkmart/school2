@@ -1,44 +1,43 @@
-// ----------------------------------------------------------------
-// From Game Programming in C++ by Sanjay Madhav
-// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-// 
-// Released under the BSD License
-// See LICENSE in root directory for full details.
-// ----------------------------------------------------------------
-
 #include "MoveComponent2.h"
 #include "Actor.h"
 
 MoveComponent2::MoveComponent2(class Actor* owner, int updateOrder)
 	:Component(owner, updateOrder)
-	, mAngularSpeed(0.0f)
 	, mForwardSpeed(0.0f)
 {
 
 }
 
+//レーザーと隕石は向いてる方向に進み続ける
 void MoveComponent2::Update(float deltaTime)
 {
-	if (!Math::NearZero(mForwardSpeed))
-	{
-		Vector2 pos = mOwner->GetPosition();
-		pos += mOwner->GetForward() * mForwardSpeed * deltaTime;
+	//座標を取得し向いてる方向に値を足す
+	Vector2 pos = mOwner->GetPosition();
+	//mForwardSpeedはAsteroid.cppとLaser.cppで別々に設定済み
+	pos += mOwner->GetForward() * mForwardSpeed * deltaTime;
 
-		// (Screen wrapping code only for asteroids)
-		if (pos.x < 0.0f) { pos.x = 1022.0f; }
-		else if (pos.x > 1024.0f) { pos.x = 2.0f; }
-
-		float rot = mOwner->GetRotation();
-		if (pos.y < 0.0f) 
-		{ 
-			rot += 30.0f * deltaTime; 
-		}
-		else if (pos.y > 768.0f) 
-		{ 
-			rot -= 30.0f * deltaTime;
-		}
-
-		mOwner->SetPosition(pos);
-		mOwner->SetRotation(rot);
+	//左に移動し画面端に行った場合右端に移動する
+	if (pos.x < 0.0f) 
+	{ 
+		pos.x = 1022.0f; 
 	}
+	//右に移動し画面端に行った場合左端に移動する
+	else if (pos.x > 1024.0f) 
+	{ 
+		pos.x = 2.0f; 
+	}
+
+	//向いてる方向を取得し上下の画面買いに行った際に方向転換をさせる
+	float rot = mOwner->GetRotation();
+	if (pos.y < 0.0f)
+	{
+		rot += 45.0f;
+	}
+	else if (pos.y > 768.0f)
+	{
+		rot -= 45.0f;
+	}
+
+	mOwner->SetPosition(pos);
+	mOwner->SetRotation(rot);
 }

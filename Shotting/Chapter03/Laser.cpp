@@ -1,11 +1,3 @@
-// ----------------------------------------------------------------
-// From Game Programming in C++ by Sanjay Madhav
-// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-// 
-// Released under the BSD License
-// See LICENSE in root directory for full details.
-// ----------------------------------------------------------------
-
 #include "Laser.h"
 #include "SpriteComponent.h"
 #include "MoveComponent2.h"
@@ -13,40 +5,47 @@
 #include "CircleComponent.h"
 #include "Asteroid.h"
 
+//複数のプログラムでゲームの状態を確認する為externを使用
+extern int mClearFlag;
+
 Laser::Laser(Game* game)
 	:Actor(game)
+	//生成から削除までの時間の設定
 	,mDeathTimer(1.0f)
 {
-	// Create a sprite component
+	//spritecomponentの作成
 	SpriteComponent* sc = new SpriteComponent(this);
 	sc->SetTexture(game->GetTexture("Assets/Laser.png"));
 
-	// Create a move component, and set a forward speed
+	//movecomponenの作成
 	MoveComponent2* mc = new MoveComponent2(this);
+	//レーザーのスピードの設定
 	mc->SetForwardSpeed(800.0f);
 
-	// Create a circle component (for collision)
+	//レーザーの当たり判定の生成
 	mCircle = new CircleComponent(this);
 	mCircle->SetRadius(11.0f);
 }
 
 void Laser::UpdateActor(float deltaTime)
 {
-	// If we run out of time, laser is dead
+	//生成してから立った時間を減らす
 	mDeathTimer -= deltaTime;
+	//削除までの時間がたったか
 	if (mDeathTimer <= 0.0f)
 	{
 		SetState(EDead);
 	}
+	//削除しなかった場合は隕石との衝突の確認
 	else
 	{
-		// Do we intersect with an asteroid?
 		for (auto ast : GetGame()->GetAsteroids())
 		{
 			if (Intersect(*mCircle, *(ast->GetCircle())))
 			{
-				// The first asteroid we intersect with,
-				// set ourselves and the asteroid to dead
+				//消した隕石の数を記録
+				mClearFlag++;
+				//レーザーと隕石を削除する
 				SetState(EDead);
 				ast->SetState(EDead);
 				break;

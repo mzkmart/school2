@@ -1,11 +1,3 @@
-// ----------------------------------------------------------------
-// From Game Programming in C++ by Sanjay Madhav
-// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-// 
-// Released under the BSD License
-// See LICENSE in root directory for full details.
-// ----------------------------------------------------------------
-
 #pragma once
 #include "MoveComponent.h"
 #include "MoveComponent2.h"
@@ -14,50 +6,49 @@
 class InputComponent : public MoveComponent
 {
 public:
-	// Lower update order to update first
 	InputComponent(class Actor* owner);
-
 	void ProcessInput(const uint8_t* keyState) override;
-	
-	// Getters/setters for private variables
-	float GetMaxForward() const { return mMaxForwardSpeed; }
-	float GetMaxAngular() const { return mMaxAngularSpeed; }
-	int GetForwardKey() const { return mRightKey; }
-	int GetBackKey() const { return mLeftKey; }
-	//変更点
-	int GetJumpKey() const { return mJumpKey; }
-	int GetClockwiseKey() const { return mClockwiseKey; }
-	int GetCounterClockwiseKey() const { return mCounterClockwiseKey; }
 
+	//Ship.cppで移動量の数値設定するために使用する
+	//横に進む量の設定
 	void SetMaxForwardSpeed(float speed) { mMaxForwardSpeed = speed; }
+	//回転する量の設定
 	void SetMaxAngularSpeed(float speed) { mMaxAngularSpeed = speed; }
-	//変更点
-	void SetMaxJumpSpeed(float speed) { mMaxJumpSpeed = 100; }
+	//ジャンプする量の設定
+	void SetMaxJumpSpeed(float speed) { mMaxJumpSpeed = speed; }
+
+
+	//Ship.cppでキーを設定するために使用する
+	//右移動のキーの設定
 	void SetRightKey(int key) { mRightKey = key; }
+	//左移動のキーの設定
 	void SetLeftKey(int key) { mLeftKey = key; }
-	void SetLeftRotateKey(int key) { mRightRotateKey = key; };
-	void SetRightRotateKey(int key) { mLeftRotateKey = key; };
-	void SetFowardRotateKey(int key) { mFowardRotateKey = key; };
-	//変更点
+	//ジャンプキーの設定
 	void SetJumpKey(int key) { mJumpKey = key; }
+	//右回転のキー設定
 	void SetClockwiseKey(int key) { mClockwiseKey = key; }
+	//左回転のキー設定
 	void SetCounterClockwiseKey(int key) { mCounterClockwiseKey = key; }
+
 private:
-	// The maximum forward/angular speeds
+	//横移動量
 	float mMaxForwardSpeed;
+	//回転量
 	float mMaxAngularSpeed;
-	//変更点
+	//ジャンプ量
 	float mMaxJumpSpeed;
-	// Keys for forward/back movement
+	//右移動キー
 	int mRightKey;
+	//左移動キー
 	int mLeftKey;
-	//変更点
+	//右回転キー
 	int mRightRotateKey;
+	//左回転キー
 	int mLeftRotateKey;
-	int mFowardRotateKey;
+	//ジャンプキー
 	int mJumpKey;
-	float jumpSpeed;
-	// Keys for angular movement
+	//右回転キー
 	int mClockwiseKey;
+	//左回転キー
 	int mCounterClockwiseKey;
 };

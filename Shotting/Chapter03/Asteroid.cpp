@@ -1,11 +1,3 @@
-// ----------------------------------------------------------------
-// From Game Programming in C++ by Sanjay Madhav
-// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-// 
-// Released under the BSD License
-// See LICENSE in root directory for full details.
-// ----------------------------------------------------------------
-
 #include "Asteroid.h"
 #include "SpriteComponent.h"
 #include "MoveComponent2.h"
@@ -17,30 +9,33 @@ Asteroid::Asteroid(Game* game)
 	:Actor(game)
 	,mCircle(nullptr)
 {
-	// Initialize to random position/orientation
+	//隕石をランダムな位置、角度に設定する
+	//生成時にプレイヤーと当たらないように調整
 	Vector2 randPos = Random::GetVector(Vector2::Zero,
-		Vector2(1024.0f, 768.0f));
+		Vector2(1024.0f, 500.0f));
 	SetPosition(randPos);
 
 	SetRotation(Random::GetFloatRange(0.0f, Math::TwoPi));
 
-	// Create a sprite component
+	//spritecomponentの作成
 	SpriteComponent* sc = new SpriteComponent(this);
 	sc->SetTexture(game->GetTexture("Assets/Asteroid2.png"));
 
-	// Create a move component, and set a forward speed
+	//movecomponentを生成
 	MoveComponent2* mc = new MoveComponent2(this);
+	//隕石のスピードの設定
 	mc->SetForwardSpeed(150.0f);
 
-	// Create a circle component (for collision)
+	//隕石の当たり判定の設定
 	mCircle = new CircleComponent(this);
 	mCircle->SetRadius(20.0f);
 
-	// Add to mAsteroids in game
+	//隕石を配列に格納する
 	game->AddAsteroid(this);
 }
 
 Asteroid::~Asteroid()
 {
+	//隕石を削除
 	GetGame()->RemoveAsteroid(this);
 }

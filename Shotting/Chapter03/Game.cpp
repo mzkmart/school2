@@ -1,11 +1,3 @@
-// ----------------------------------------------------------------
-// From Game Programming in C++ by Sanjay Madhav
-// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-// 
-// Released under the BSD License
-// See LICENSE in root directory for full details.
-// ----------------------------------------------------------------
-
 #include "Game.h"
 #include "SDL/SDL_image.h"
 #include <algorithm>
@@ -15,6 +7,19 @@
 #include "BGSpriteComponent.h"
 #include "Asteroid.h"
 #include "Random.h"
+#include "InputComponent.h"
+#include "Start.h"
+
+#include <iostream>
+#include <algorithm>
+#include <string>
+
+//externで使用するためcppで宣言
+//ゲームがどの状態かのフラグ
+int mStartFlag = 0;
+//クリアされたかのフラグ
+//倒した敵の数を保存するためにint型
+int mClearFlag = 0;
 
 Game::Game()
 :mWindow(nullptr)
@@ -22,31 +27,71 @@ Game::Game()
 ,mIsRunning(true)
 ,mUpdatingActors(false)
 {
-	
 }
 
-bool Game::Initialize()
+//ゲームメイン画面の生成
+void Game::Initialize()
 {
 	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO) != 0)
 	{
 		SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
-		return false;
+		return;
 	}
 	
 	mWindow = SDL_CreateWindow("Game Programming in C++ (Chapter 3)", 100, 100, 1024, 768, 0);
 	if (!mWindow)
 	{
 		SDL_Log("Failed to create window: %s", SDL_GetError());
-		return false;
+		return;
 	}
 	
 	mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (!mRenderer)
 	{
 		SDL_Log("Failed to create renderer: %s", SDL_GetError());
-		return false;
+		return;
 	}
 	
+	if (IMG_Init(IMG_INIT_PNG) == 0)
+	{
+		SDL_Log("Unable to initialize SDL_image: %s", SDL_GetError());
+		return;
+	}
+
+	Random::Init();
+	
+	LoadData();
+
+	mTicksCount = SDL_GetTicks();
+	
+	return;
+}
+
+//ゲームのスタート画面の生成
+bool Game::Initialize2()
+{
+	//画面の生成に成功したかを判定する
+	//ここの判定がMain.cppでループに入るかに使われている
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
+	{
+		SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
+		return false;
+	}
+
+	mWindow = SDL_CreateWindow("Game Programming in C++ (Chapter 3)", 100, 100, 1024, 768, 0);
+	if (!mWindow)
+	{
+		SDL_Log("Failed to create window: %s", SDL_GetError());
+		return false;
+	}
+
+	mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	if (!mRenderer)
+	{
+		SDL_Log("Failed to create renderer: %s", SDL_GetError());
+		return false;
+	}
+
 	if (IMG_Init(IMG_INIT_PNG) == 0)
 	{
 		SDL_Log("Unable to initialize SDL_image: %s", SDL_GetError());
@@ -55,13 +100,16 @@ bool Game::Initialize()
 
 	Random::Init();
 
-	LoadData();
+	//スタート画面を描画する
+	StartData();
 
 	mTicksCount = SDL_GetTicks();
-	
+
+	//成功していた場合はループに入るようにtrueを返す
 	return true;
 }
 
+//Main.cppのループで呼び出される
 void Game::RunLoop()
 {
 	while (mIsRunning)
@@ -145,11 +193,12 @@ void Game::UpdateGame()
 	}
 }
 
+//ゲームの状態に合わせて画面を生成する
 void Game::GenerateOutput()
 {
 	SDL_SetRenderDrawColor(mRenderer, 220, 220, 220, 255);
 	SDL_RenderClear(mRenderer);
-	
+
 	// Draw all sprite components
 	for (auto sprite : mSprites)
 	{
@@ -157,16 +206,45 @@ void Game::GenerateOutput()
 	}
 
 	SDL_RenderPresent(mRenderer);
+
+
+	//クリアしたのか、やられたのかを確認し画面を生成する
+	//スタートボタンが押されていたら
+	if (mStartFlag == 1)
+	{
+		Shutdown();
+		Initialize();
+		mStartFlag = 2;
+	}
+	//隕石が全部壊されたら
+	else if (mClearFlag >= 20)
+	{
+		Shutdown();
+		mStartFlag = 3;
+		mClearFlag = 0;
+		Initialize2();
+		mStartFlag = 0;
+	}
+	//ゲームオーバーになったか
+	else if (mStartFlag == 4)
+	{
+		Shutdown();
+		Initialize2();
+		mStartFlag = 0;
+		mClearFlag = 0;
+	}
+
 }
 
+//ゲーム画面にプレーヤーや隕石の描画と生成
 void Game::LoadData()
 {
-	// Create player's ship
+	//プレイヤーの生成
 	mShip = new Ship(this);
 	mShip->SetPosition(Vector2(512.0f, 730.0f));
 	mShip->SetRotation(Math::PiOver2);
 
-	// Create asteroids
+	//隕石の生成
 	const int numAsteroids = 20;
 	for (int i = 0; i < numAsteroids; i++)
 	{
@@ -176,7 +254,7 @@ void Game::LoadData()
 	Actor* temp = new Actor(this);
 	temp->SetPosition(Vector2(512.0f, 384.0f));
 
-	// Create the "far back" background
+	//背景の設定
 	BGSpriteComponent* bg = new BGSpriteComponent(temp);
 	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
 	std::vector<SDL_Texture*> bgtexs = {
@@ -195,6 +273,46 @@ void Game::LoadData()
 	bg->SetBGTextures(bgtexs);
 	bg->SetScrollSpeed(-200.0f);
 }
+
+//スタート画面の設定
+void Game::StartData()
+{
+	mStart = new Start(this);
+	Actor* temp = new Actor(this);
+	temp->SetPosition(Vector2(512.0f, 384.0f));
+
+	// Create the "far back" background
+	BGSpriteComponent* bg = new BGSpriteComponent(temp);
+	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
+	std::vector<SDL_Texture*> bgtexs;
+
+	//ゲームの状態を取得し表示させる画像を変更させる
+	if (mStartFlag == 0)
+	{
+	    bgtexs = 
+		{
+			GetTexture("Assets/Startback.png")
+		};
+	}
+	else if (mStartFlag == 3)
+	{
+		bgtexs =
+		{
+			GetTexture("Assets/Clearback.png")
+		};
+	}
+	else if (mStartFlag == 4)
+	{
+		bgtexs =
+		{
+			GetTexture("Assets/GameOverback.png")
+		};
+	}
+
+	bg->SetBGTextures(bgtexs);
+}
+
+
 
 void Game::UnloadData()
 {

@@ -1,42 +1,37 @@
-// ----------------------------------------------------------------
-// From Game Programming in C++ by Sanjay Madhav
-// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-// 
-// Released under the BSD License
-// See LICENSE in root directory for full details.
-// ----------------------------------------------------------------
-
 #pragma once
 #include "Component.h"
 
 class MoveComponent : public Component
 {
 public:
-	// Lower update order to update first
 	MoveComponent(class Actor* owner, int updateOrder = 10);
-
 	void Update(float deltaTime) override;
 	
-	float GetAngularSpeed() const { return mAngularSpeed; }
-	float GetForwardSpeed() const { return mForwardSpeed; }
+	//InputComponent.cppでジャンプできるかの判定を取得するメソッド
 	float GetJumpBool() const { return mJumpControl; }
-	//変更点
-	float GetJumpSpeed() const { return mJumpSpeed;  }
+
+	//InputComponent.cppで入力された時値を入れるメソッド
+	//回転の数値を入れる
 	void SetAngularSpeed(float speed) { mAngularSpeed = speed; }
+	//横移動の数値を入れる
 	void SetForwardSpeed(float speed) { mForwardSpeed = speed; }
+	//ジャンプの数値を入れる
 	void SetJumpSpeed(float speed) { mJumpSpeed = speed; }
+	//ジャンプ中の横移動の数値を入れる
 	void SetJumpForward(float speed) { mJumpForwardSpeed = speed; }
+	//ジャンプのフラグを変更する
 	void SetJumpflag(bool flag) { mJumpControl = flag; }
 private:
-	// Controls rotation (radians/second)
+	//回転する値
 	float mAngularSpeed;
-	// Controls forward movement (units/second)
+	//横移動の値
 	float mForwardSpeed;
-	//変更点
+	//ジャンプの値
 	float mJumpSpeed;
-	float mJumptime;
-	bool mJumpBool = false;
-	bool mJumpControl = true;
-	bool mGravityControl = false;
+	//ジャンプ時の横移動の値
 	float mJumpForwardSpeed;
+	//ジャンプのフラグ
+	bool mJumpControl = true;
+	//重力をかけるかのフラグ
+	bool mGravityControl = false;
 };
