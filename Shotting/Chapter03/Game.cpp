@@ -21,6 +21,11 @@ int mStartFlag = 0;
 //ì|ÇµÇΩìGÇÃêîÇï€ë∂Ç∑ÇÈÇΩÇﬂÇ…intå^
 int mClearFlag = 0;
 
+//Ë¶êŒÇÃç¿ïWîzóÒ
+float mAsteroidsVectorX[15] = {100.0f, 200.0f, 300.0f, 400.0f, 500.0f, 600.0f, 700.0f, 800.0f, 900.0f, 1000.0f, 200.0f, 400.0f, 600.0f, 800.0f, 1000.0f};
+float mAsteroidsVectorY[15] = {100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 350.0f, 350.0f, 350.0f, 350.0f, 350.0f};
+
+
 Game::Game()
 :mWindow(nullptr)
 ,mRenderer(nullptr)
@@ -217,7 +222,7 @@ void Game::GenerateOutput()
 		mStartFlag = 2;
 	}
 	//Ë¶êŒÇ™ëSïîâÛÇ≥ÇÍÇΩÇÁ
-	else if (mClearFlag >= 20)
+	else if (mClearFlag >= 15)
 	{
 		Shutdown();
 		mStartFlag = 3;
@@ -245,10 +250,12 @@ void Game::LoadData()
 	mShip->SetRotation(Math::PiOver2);
 
 	//Ë¶êŒÇÃê∂ê¨
-	const int numAsteroids = 20;
+	const int numAsteroids = 15;
 	for (int i = 0; i < numAsteroids; i++)
 	{
-		new Asteroid(this);
+		//new Asteroid(this);
+		Actor* temp = new Asteroid(this);
+		temp->SetPosition(Vector2(mAsteroidsVectorX[i], mAsteroidsVectorY[i]));
 	}
 
 	Actor* temp = new Actor(this);

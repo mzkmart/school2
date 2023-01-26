@@ -31,11 +31,13 @@ void MoveComponent2::Update(float deltaTime)
 	float rot = mOwner->GetRotation();
 	if (pos.y < 0.0f)
 	{
-		rot += 45.0f;
+		pos.y = 0.0f;
+		rot = TwoPi - rot;
 	}
 	else if (pos.y > 768.0f)
 	{
-		rot -= 45.0f;
+		pos.y = 768.0f;
+		rot = -1 * (rot - TwoPi);
 	}
 
 	mOwner->SetPosition(pos);

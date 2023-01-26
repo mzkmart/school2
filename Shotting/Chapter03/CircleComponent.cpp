@@ -37,4 +37,6 @@ bool Intersect(const CircleComponent& a, const CircleComponent& b)
 	radiiSq *= radiiSq;
 
 	return distSq <= radiiSq;
+
 }
+

@@ -1,9 +1,7 @@
 #include "MoveComponent.h"
 #include "Actor.h"
 #include "stdio.h"
-#include <iostream>
-#include <algorithm>
-#include <string>
+
 
 MoveComponent::MoveComponent(class Actor* owner, int updateOrder)
 	:Component(owner, updateOrder)
@@ -102,6 +100,7 @@ void MoveComponent::Update(float deltaTime)
 	{ 
 		pos.x = 2.0f; 
 	}
+
 
 	mOwner->SetPosition(pos);
 }
